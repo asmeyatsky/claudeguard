@@ -49,9 +49,9 @@ const modules = [
     borderColor: 'border-danger/30',
     bgColor: 'bg-danger/5',
     textColor: 'text-danger',
-    href: '',
-    cta: 'Coming Soon',
-    available: false,
+    href: '/dashboard',
+    cta: 'Open Dashboard',
+    available: true,
   },
 ]
 

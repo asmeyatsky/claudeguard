@@ -39,6 +39,16 @@ export default function Layout({ children }: { children: ReactNode }) {
                   >
                     Configurator
                   </Link>
+                  <Link
+                    to="/dashboard"
+                    className={`px-3 py-1.5 rounded-md text-sm transition-all ${
+                      path === '/dashboard'
+                        ? 'bg-electric/10 text-electric font-medium'
+                        : 'text-navy-400 hover:text-white'
+                    }`}
+                  >
+                    Dashboard
+                  </Link>
                 </nav>
               </div>
               <span className="text-xs text-navy-600 hidden sm:inline">Enterprise Security Lifecycle for Agentic AI</span>

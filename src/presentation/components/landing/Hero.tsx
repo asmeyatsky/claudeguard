@@ -5,7 +5,7 @@ export default function Hero() {
     { name: 'ASSESS', color: 'bg-electric', href: '/assessment' },
     { name: 'CONFIGURE', color: 'bg-amber-accent', href: '/configurator' },
     { name: 'DEPLOY', color: 'bg-emerald-accent', href: '' },
-    { name: 'MONITOR', color: 'bg-danger', href: '' },
+    { name: 'MONITOR', color: 'bg-danger', href: '/dashboard' },
   ]
 
   return (
