@@ -4,6 +4,7 @@ import LandingPage from './presentation/pages/LandingPage'
 import ConfiguratorPage from './presentation/pages/ConfiguratorPage'
 import AssessmentPage from './presentation/pages/AssessmentPage'
 import DashboardPage from './presentation/pages/DashboardPage'
+import ProvisionerPage from './presentation/pages/ProvisionerPage'
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Route path="/configurator" component={ConfiguratorPage} />
         <Route path="/assessment" component={AssessmentPage} />
         <Route path="/dashboard" component={DashboardPage} />
+        <Route path="/provisioner" component={ProvisionerPage} />
       </Layout>
     </Router>
   )

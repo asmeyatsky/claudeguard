@@ -4,7 +4,7 @@ export default function Hero() {
   const phases = [
     { name: 'ASSESS', color: 'bg-electric', href: '/assessment' },
     { name: 'CONFIGURE', color: 'bg-amber-accent', href: '/configurator' },
-    { name: 'DEPLOY', color: 'bg-emerald-accent', href: '' },
+    { name: 'DEPLOY', color: 'bg-emerald-accent', href: '/provisioner' },
     { name: 'MONITOR', color: 'bg-danger', href: '/dashboard' },
   ]
 

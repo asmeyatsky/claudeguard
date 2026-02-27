@@ -36,9 +36,9 @@ const modules = [
     borderColor: 'border-emerald-accent/30',
     bgColor: 'bg-emerald-accent/5',
     textColor: 'text-emerald-accent',
-    href: '',
-    cta: 'Coming Soon',
-    available: false,
+    href: '/provisioner',
+    cta: 'Open Provisioner',
+    available: true,
   },
   {
     phase: 4,

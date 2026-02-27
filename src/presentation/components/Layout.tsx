@@ -40,6 +40,16 @@ export default function Layout({ children }: { children: ReactNode }) {
                     Configurator
                   </Link>
                   <Link
+                    to="/provisioner"
+                    className={`px-3 py-1.5 rounded-md text-sm transition-all ${
+                      path === '/provisioner'
+                        ? 'bg-electric/10 text-electric font-medium'
+                        : 'text-navy-400 hover:text-white'
+                    }`}
+                  >
+                    Provisioner
+                  </Link>
+                  <Link
                     to="/dashboard"
                     className={`px-3 py-1.5 rounded-md text-sm transition-all ${
                       path === '/dashboard'
