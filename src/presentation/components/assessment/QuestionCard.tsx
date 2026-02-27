@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { Question } from '../../../domain/value-objects/aria-dimensions'
 
 interface QuestionCardProps {
@@ -7,7 +8,7 @@ interface QuestionCardProps {
   onAnswer: (questionId: string, score: number) => void
 }
 
-export default function QuestionCard({ question, index, selectedScore, onAnswer }: QuestionCardProps) {
+export default memo(function QuestionCard({ question, index, selectedScore, onAnswer }: QuestionCardProps) {
   return (
     <div className="glass-card rounded-xl p-6 mb-4">
       <div className="flex items-start gap-3 mb-5">
@@ -50,4 +51,4 @@ export default function QuestionCard({ question, index, selectedScore, onAnswer 
       </div>
     </div>
   )
-}
+})

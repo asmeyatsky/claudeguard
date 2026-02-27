@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { DIMENSIONS, DIMENSION_ORDER, QUESTIONS, type DimensionId } from '../../../domain/value-objects/aria-dimensions'
 
 interface DimensionNavProps {
@@ -8,7 +9,7 @@ interface DimensionNavProps {
   onViewResults: () => void
 }
 
-export default function DimensionNav({ activeDimension, answers, onSelect, showResults, onViewResults }: DimensionNavProps) {
+export default memo(function DimensionNav({ activeDimension, answers, onSelect, showResults, onViewResults }: DimensionNavProps) {
   return (
     <div className="space-y-1.5">
       {DIMENSION_ORDER.map((dimId) => {
@@ -56,4 +57,4 @@ export default function DimensionNav({ activeDimension, answers, onSelect, showR
       </button>
     </div>
   )
-}
+})

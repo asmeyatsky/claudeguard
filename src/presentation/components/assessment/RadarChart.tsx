@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import type { DimensionScore } from '../../../domain/entities/assessment'
 import { DIMENSIONS, DIMENSION_ORDER } from '../../../domain/value-objects/aria-dimensions'
 
@@ -6,7 +7,7 @@ interface RadarChartProps {
   size?: number
 }
 
-export default function RadarChart({ scores, size = 280 }: RadarChartProps) {
+export default memo(function RadarChart({ scores, size = 280 }: RadarChartProps) {
   const cx = size / 2
   const cy = size / 2
   const radius = size / 2 - 40
@@ -103,4 +104,9 @@ export default function RadarChart({ scores, size = 280 }: RadarChartProps) {
       })}
     </svg>
   )
-}
+}, (prev, next) => {
+  // Only re-render if scores actually changed
+  if (prev.size !== next.size) return false
+  if (prev.scores.length !== next.scores.length) return false
+  return prev.scores.every((s, i) => s.score === next.scores[i].score && s.dimensionId === next.scores[i].dimensionId)
+})
