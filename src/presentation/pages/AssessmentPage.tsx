@@ -21,6 +21,7 @@ export default function AssessmentPage() {
     goToNextDimension,
     viewResults,
     resetAssessment,
+    getRecommendations,
   } = useAssessment()
 
   const dim = DIMENSIONS[activeDimension]
@@ -67,6 +68,7 @@ export default function AssessmentPage() {
               totalAnswered={totalAnswered}
               totalQuestions={totalQuestions}
               onReset={resetAssessment}
+              getRecommendations={getRecommendations}
             />
           ) : (
             <div>

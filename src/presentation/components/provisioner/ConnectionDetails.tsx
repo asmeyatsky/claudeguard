@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import type { ProvisioningRequest } from '../../../domain/entities/provisioning-request'
 
 interface Props {
@@ -6,12 +7,20 @@ interface Props {
 }
 
 export default function ConnectionDetails({ request, onReset }: Props) {
+  const [copiedField, setCopiedField] = useState<string | null>(null)
+
   if (!request.connectionDetails) return null
 
   const { connectionDetails: cd } = request
 
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text)
+  const copyToClipboard = async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopiedField(label)
+      setTimeout(() => setCopiedField(null), 2000)
+    } catch {
+      // Clipboard API not available
+    }
   }
 
   const fields = [
@@ -43,10 +52,14 @@ export default function ConnectionDetails({ request, onReset }: Props) {
             </div>
             {f.label !== 'Expires' && (
               <button
-                onClick={() => copyToClipboard(f.value)}
-                className="flex-shrink-0 px-2 py-1 rounded text-[10px] text-navy-400 border border-navy-700 hover:text-white hover:border-navy-600 transition-colors"
+                onClick={() => copyToClipboard(f.value, f.label)}
+                className={`flex-shrink-0 px-2 py-1 rounded text-[10px] border transition-colors ${
+                  copiedField === f.label
+                    ? 'text-emerald-accent border-emerald-accent/50'
+                    : 'text-navy-400 border-navy-700 hover:text-white hover:border-navy-600'
+                }`}
               >
-                Copy
+                {copiedField === f.label ? 'Copied!' : 'Copy'}
               </button>
             )}
           </div>

@@ -74,7 +74,7 @@ export const DIMENSIONS: Record<DimensionId, Dimension> = {
   },
 }
 
-export const DIMENSION_ORDER: DimensionId[] = [
+export const DIMENSION_ORDER: readonly DimensionId[] = [
   'infrastructure', 'identity', 'data', 'secops', 'compliance', 'ai-governance',
 ]
 
@@ -82,7 +82,7 @@ const opt = (label: string, score: number, description: string): QuestionOption 
   label, score, description,
 })
 
-export const QUESTIONS: Question[] = [
+export const QUESTIONS: readonly Question[] = [
   // ── Infrastructure Readiness (10 questions) ──
   {
     id: 'infra-1', dimension: 'infrastructure', weight: 1.2,

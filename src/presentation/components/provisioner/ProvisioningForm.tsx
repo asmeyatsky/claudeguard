@@ -69,6 +69,8 @@ export default function ProvisioningForm({
             value={projectName}
             onChange={(e) => onProjectNameChange(e.target.value)}
             placeholder="e.g. billing-service"
+            aria-label="Project name"
+            aria-required="true"
             className="w-full px-3 py-2.5 rounded-lg bg-navy-900 border border-navy-800 text-white text-sm placeholder-navy-600 focus:outline-none focus:border-emerald-accent/50 transition-colors"
           />
         </div>
@@ -82,6 +84,8 @@ export default function ProvisioningForm({
               value={userName}
               onChange={(e) => onUserNameChange(e.target.value)}
               placeholder="e.g. jane.doe"
+              aria-label="User name"
+              aria-required="true"
               className="w-full px-3 py-2.5 rounded-lg bg-navy-900 border border-navy-800 text-white text-sm placeholder-navy-600 focus:outline-none focus:border-emerald-accent/50 transition-colors"
             />
           </div>
@@ -92,6 +96,8 @@ export default function ProvisioningForm({
               value={teamName}
               onChange={(e) => onTeamNameChange(e.target.value)}
               placeholder="e.g. platform-eng"
+              aria-label="Team name"
+              aria-required="true"
               className="w-full px-3 py-2.5 rounded-lg bg-navy-900 border border-navy-800 text-white text-sm placeholder-navy-600 focus:outline-none focus:border-emerald-accent/50 transition-colors"
             />
           </div>
@@ -100,10 +106,12 @@ export default function ProvisioningForm({
         {/* Risk Profile */}
         <div>
           <label className="block text-sm font-medium text-navy-300 mb-1.5">Security Profile</label>
-          <div className="grid grid-cols-3 gap-2">
+          <div className="grid grid-cols-3 gap-2" role="radiogroup" aria-label="Security profile">
             {riskProfiles.map(([id, rp]) => (
               <button
                 key={id}
+                role="radio"
+                aria-checked={riskProfile === id}
                 onClick={() => onRiskProfileChange(id)}
                 className={`p-3 rounded-lg border text-left transition-all ${
                   riskProfile === id

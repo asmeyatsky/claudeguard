@@ -73,6 +73,17 @@ export function advanceStatus(
   }
 }
 
+export function failProvisioning(request: ProvisioningRequest, error: string): ProvisioningRequest {
+  return {
+    ...request,
+    status: 'failed',
+    statusHistory: [
+      ...request.statusHistory,
+      { status: 'failed', timestamp: new Date().toISOString(), message: error },
+    ],
+  }
+}
+
 export function completeProvisioning(request: ProvisioningRequest): ProvisioningRequest {
   const containerId = `cg-${request.id.slice(5, 13)}`
   const expires = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString()

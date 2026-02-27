@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import type { DashboardView } from '../../domain/value-objects/dashboard-types'
-import { generateEvents, generateEnvironments, generateComplianceControls, generateMetrics } from '../../infrastructure/mock-telemetry'
+import { telemetryAdapter } from '../../composition-root'
 import ExecutiveView from '../components/dashboard/ExecutiveView'
 import EventsView from '../components/dashboard/EventsView'
 import ComplianceView from '../components/dashboard/ComplianceView'
@@ -16,11 +16,11 @@ const views: { id: DashboardView; label: string; icon: string; audience: string 
 export default function DashboardPage() {
   const [activeView, setActiveView] = useState<DashboardView>('executive')
 
-  // Generate mock data once
-  const events = useMemo(() => generateEvents(200), [])
-  const environments = useMemo(() => generateEnvironments(50), [])
-  const controls = useMemo(() => generateComplianceControls(), [])
-  const metrics = useMemo(() => generateMetrics(), [])
+  // Generate data once via telemetry port
+  const events = useMemo(() => telemetryAdapter.getEvents(200), [])
+  const environments = useMemo(() => telemetryAdapter.getEnvironments(50), [])
+  const controls = useMemo(() => telemetryAdapter.getComplianceControls(), [])
+  const metrics = useMemo(() => telemetryAdapter.getMetrics(), [])
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

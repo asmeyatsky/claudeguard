@@ -37,16 +37,9 @@ export default function Hero() {
         <div className="flex items-center justify-center gap-2 sm:gap-4 mb-12 flex-wrap">
           {phases.map((phase, i) => (
             <div key={phase.name} className="flex items-center gap-2 sm:gap-4">
-              {phase.href ? (
-                <Link to={phase.href} className={`px-4 sm:px-6 py-2.5 ${phase.color} rounded-lg text-white font-bold text-sm sm:text-base tracking-wide shadow-lg hover:scale-105 transition-transform`}>
-                  {phase.name}
-                </Link>
-              ) : (
-                <div className={`px-4 sm:px-6 py-2.5 ${phase.color}/50 rounded-lg text-white/50 font-bold text-sm sm:text-base tracking-wide`}>
-                  {phase.name}
-                  <span className="text-[10px] ml-1 opacity-60">soon</span>
-                </div>
-              )}
+              <Link to={phase.href} className={`px-4 sm:px-6 py-2.5 ${phase.color} rounded-lg text-white font-bold text-sm sm:text-base tracking-wide shadow-lg hover:scale-105 transition-transform`}>
+                {phase.name}
+              </Link>
               {i < phases.length - 1 && (
                 <svg className="w-5 h-5 text-navy-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />

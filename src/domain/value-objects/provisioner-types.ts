@@ -135,7 +135,7 @@ export const ENVIRONMENT_TEMPLATES: Record<EnvironmentTemplate, EnvironmentTempl
   },
 }
 
-export const PROVISIONING_STEPS: { status: ProvisioningStatus; label: string; description: string }[] = [
+export const PROVISIONING_STEPS: readonly { status: ProvisioningStatus; label: string; description: string }[] = [
   { status: 'requesting', label: 'Request Submitted', description: 'Provisioning request received and validated' },
   { status: 'resolving-policy', label: 'Resolving Policy', description: 'Combining org, team, and project security policies' },
   { status: 'building-image', label: 'Building Image', description: 'Container image built with resolved policy baked in' },

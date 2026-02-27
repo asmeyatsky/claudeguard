@@ -8,9 +8,11 @@ interface ArtifactPreviewProps {
 
 export default function ArtifactPreview({ artifacts }: ArtifactPreviewProps) {
   const [activeIndex, setActiveIndex] = useState(0)
-  const active = artifacts[activeIndex]
 
   if (artifacts.length === 0) return null
+
+  const safeIndex = activeIndex >= artifacts.length ? 0 : activeIndex
+  const active = artifacts[safeIndex]
 
   return (
     <div className="flex flex-col h-full">
@@ -26,7 +28,7 @@ export default function ArtifactPreview({ artifacts }: ArtifactPreviewProps) {
             key={artifact.filename}
             onClick={() => setActiveIndex(i)}
             className={`px-3 py-1.5 rounded text-xs font-mono transition-all ${
-              i === activeIndex
+              i === safeIndex
                 ? 'bg-electric/15 text-electric border border-electric/30'
                 : 'text-navy-500 hover:text-navy-300 border border-navy-800 hover:border-navy-700'
             }`}

@@ -4,27 +4,22 @@ import type { ComplianceFrameworkId } from '../../domain/value-objects/complianc
 import type { RiskProfileId } from '../../domain/value-objects/risk-profile'
 import type { CloudProviderId } from '../../domain/value-objects/cloud-provider'
 import type { GeneratedArtifact } from '../../domain/ports/template-engine-port'
-import { TemplateEngine } from '../../infrastructure/template-engine'
-import { ZipPackager } from '../../infrastructure/zip-packager'
-import { GenerateConfigUseCase } from '../../application/use-cases/generate-config'
+import { generateConfigUseCase } from '../../composition-root'
 
 export type WizardStep = 'compliance' | 'cloud' | 'risk' | 'review'
 
 const STEPS: WizardStep[] = ['compliance', 'cloud', 'risk', 'review']
 
-const templateEngine = new TemplateEngine()
-const packager = new ZipPackager()
-const useCase = new GenerateConfigUseCase(templateEngine, packager)
-
 export function useConfigWizard() {
   const [currentStep, setCurrentStep] = useState<WizardStep>('compliance')
   const [profile, setProfile] = useState<ConfigProfile>(createConfigProfile())
   const [isDownloading, setIsDownloading] = useState(false)
+  const [downloadError, setDownloadError] = useState<string | null>(null)
 
   const stepIndex = STEPS.indexOf(currentStep)
 
   const artifacts: GeneratedArtifact[] = useMemo(
-    () => useCase.generateArtifacts(profile),
+    () => generateConfigUseCase.generateArtifacts(profile),
     [profile]
   )
 
@@ -66,8 +61,9 @@ export function useConfigWizard() {
 
   const downloadPackage = useCallback(async () => {
     setIsDownloading(true)
+    setDownloadError(null)
     try {
-      const result = await useCase.generateAndPackage(profile)
+      const result = await generateConfigUseCase.generateAndPackage(profile)
       const url = URL.createObjectURL(result.downloadBlob)
       const a = document.createElement('a')
       a.href = url
@@ -76,6 +72,8 @@ export function useConfigWizard() {
       a.click()
       document.body.removeChild(a)
       URL.revokeObjectURL(url)
+    } catch (err) {
+      setDownloadError(err instanceof Error ? err.message : 'Failed to generate package')
     } finally {
       setIsDownloading(false)
     }
@@ -88,6 +86,7 @@ export function useConfigWizard() {
     profile,
     artifacts,
     isDownloading,
+    downloadError,
     goNext,
     goBack,
     goToStep,

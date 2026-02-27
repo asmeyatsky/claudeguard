@@ -88,6 +88,23 @@ export default function ProvisionerPage() {
             {p.provisioningRequest.status === 'ready' && (
               <ConnectionDetails request={p.provisioningRequest} onReset={p.reset} />
             )}
+            {p.provisioningRequest.status === 'failed' && (
+              <div className="mt-6 rounded-xl border border-danger/30 bg-danger/5 p-5">
+                <div className="flex items-center gap-2 mb-2">
+                  <svg className="w-5 h-5 text-danger" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                  </svg>
+                  <h3 className="text-sm font-semibold text-danger">Provisioning Failed</h3>
+                </div>
+                <p className="text-xs text-navy-400 mb-4">{p.error}</p>
+                <button
+                  onClick={p.reset}
+                  className="px-5 py-2.5 border border-navy-700 text-navy-300 font-medium rounded-lg text-sm hover:border-navy-600 hover:text-white transition-colors"
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>
@@ -104,13 +121,18 @@ export default function ProvisionerPage() {
           </button>
 
           {p.currentStep === 'details' ? (
-            <button
-              onClick={p.startProvisioning}
-              disabled={!p.canProceed()}
-              className="px-6 py-2.5 bg-emerald-accent text-white font-semibold rounded-lg text-sm hover:bg-emerald-accent/80 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-emerald-accent/20"
-            >
-              Provision Environment
-            </button>
+            <div className="flex items-center gap-3">
+              {!p.canProceed() && (
+                <span className="text-xs text-amber-accent">Please fill in all required fields</span>
+              )}
+              <button
+                onClick={p.startProvisioning}
+                disabled={!p.canProceed()}
+                className="px-6 py-2.5 bg-emerald-accent text-white font-semibold rounded-lg text-sm hover:bg-emerald-accent/80 transition-colors disabled:opacity-40 disabled:cursor-not-allowed shadow-lg shadow-emerald-accent/20"
+              >
+                Provision Environment
+              </button>
+            </div>
           ) : (
             <button
               onClick={p.goNext}

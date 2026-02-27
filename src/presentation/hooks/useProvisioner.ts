@@ -5,13 +5,11 @@ import {
   type ProvisioningRequest,
   createProvisioningRequest,
 } from '../../domain/entities/provisioning-request'
-import { ProvisionEnvironmentUseCase } from '../../application/use-cases/provision-environment'
+import { provisionEnvironmentUseCase } from '../../composition-root'
 
 export type ProvisionerStep = 'target' | 'template' | 'details' | 'provisioning'
 
 const STEPS: ProvisionerStep[] = ['target', 'template', 'details', 'provisioning']
-
-const useCase = new ProvisionEnvironmentUseCase()
 
 export function useProvisioner() {
   const [currentStep, setCurrentStep] = useState<ProvisionerStep>('target')
@@ -24,6 +22,7 @@ export function useProvisioner() {
   const [mcpServers, setMcpServers] = useState<string[]>([])
   const [provisioningRequest, setProvisioningRequest] = useState<ProvisioningRequest | null>(null)
   const [isProvisioning, setIsProvisioning] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   const stepIndex = STEPS.indexOf(currentStep)
 
@@ -65,12 +64,19 @@ export function useProvisioner() {
     setProvisioningRequest(request)
     setCurrentStep('provisioning')
     setIsProvisioning(true)
+    setError(null)
 
     try {
-      const final = await useCase.execute(request, (updated) => {
+      const final = await provisionEnvironmentUseCase.execute(request, (updated) => {
         setProvisioningRequest(updated)
       })
       setProvisioningRequest(final)
+      if (final.status === 'failed') {
+        const lastEntry = final.statusHistory[final.statusHistory.length - 1]
+        setError(lastEntry?.message ?? 'Provisioning failed')
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'An unexpected error occurred')
     } finally {
       setIsProvisioning(false)
     }
@@ -80,6 +86,7 @@ export function useProvisioner() {
     setCurrentStep('target')
     setProvisioningRequest(null)
     setIsProvisioning(false)
+    setError(null)
     setProjectName('')
     setUserName('')
     setTeamName('')
@@ -106,6 +113,7 @@ export function useProvisioner() {
     setMcpServers,
     provisioningRequest,
     isProvisioning,
+    error,
     canProceed,
     goNext,
     goBack,

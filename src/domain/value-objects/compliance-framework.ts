@@ -1,10 +1,12 @@
 export type ComplianceFrameworkId = 'soc2' | 'hipaa' | 'pci-dss' | 'iso27001' | 'gdpr' | 'baseline'
 
+export type SettingValue = string | boolean | string[]
+
 export interface ComplianceControl {
   readonly id: string
   readonly description: string
   readonly settingPath: string
-  readonly settingValue: unknown
+  readonly settingValue: SettingValue
 }
 
 export interface ComplianceFramework {

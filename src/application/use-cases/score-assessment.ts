@@ -115,31 +115,44 @@ function getDeploymentReadiness(composite: number): { readiness: AssessmentResul
   return { readiness: 'full', maxUsers: 'Unlimited (autonomous)' }
 }
 
-export function scoreAssessment(state: AssessmentState): AssessmentResult {
-  const dimensionScores = DIMENSION_ORDER.map((dimId) =>
-    scoreDimension(dimId, state.answers)
-  )
+export class ScoreAssessmentUseCase {
+  score(state: AssessmentState): AssessmentResult {
+    const dimensionScores = DIMENSION_ORDER.map((dimId) =>
+      scoreDimension(dimId, state.answers)
+    )
 
-  const scored = dimensionScores.filter((ds) => ds.score > 0)
-  const compositeScore = scored.length > 0
-    ? Math.round((scored.reduce((sum, ds) => sum + ds.score, 0) / scored.length) * 10) / 10
-    : 0
+    const scored = dimensionScores.filter((ds) => ds.score > 0)
+    const compositeScore = scored.length > 0
+      ? Math.round((scored.reduce((sum, ds) => sum + ds.score, 0) / scored.length) * 10) / 10
+      : 0
 
-  const gaps = getGaps(dimensionScores)
-  const { readiness, maxUsers } = getDeploymentReadiness(compositeScore)
+    const gaps = getGaps(dimensionScores)
+    const { readiness, maxUsers } = getDeploymentReadiness(compositeScore)
 
-  return {
-    dimensionScores,
-    compositeScore,
-    overallMaturity: Math.round(compositeScore),
-    gaps,
-    deploymentReadiness: readiness,
-    maxUsers,
+    return {
+      dimensionScores,
+      compositeScore,
+      overallMaturity: Math.round(compositeScore),
+      gaps,
+      deploymentReadiness: readiness,
+      maxUsers,
+    }
+  }
+
+  getRecommendations(dimensionId: DimensionId, currentScore: number): string[] {
+    const recs = RECOMMENDATIONS[dimensionId]
+    const count = Math.max(1, Math.ceil((TARGET_SCORE - currentScore) * 2))
+    return recs.slice(0, Math.min(count, recs.length))
   }
 }
 
-export function getRecommendations(dimensionId: DimensionId, currentScore: number): string[] {
-  const recs = RECOMMENDATIONS[dimensionId]
-  const count = Math.max(1, Math.ceil((TARGET_SCORE - currentScore) * 2))
-  return recs.slice(0, Math.min(count, recs.length))
+// Keep named exports for backward compatibility during migration
+export function scoreAssessment(state: AssessmentState): AssessmentResult {
+  return new ScoreAssessmentUseCase().score(state)
 }
+
+export function getRecommendations(dimensionId: DimensionId, currentScore: number): string[] {
+  return new ScoreAssessmentUseCase().getRecommendations(dimensionId, currentScore)
+}
+
+export type { AssessmentResult }

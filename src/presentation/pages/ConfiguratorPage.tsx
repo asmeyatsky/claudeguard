@@ -15,7 +15,6 @@ export default function ConfiguratorPage() {
       <WizardShell
         currentStep={wizard.currentStep}
         stepIndex={wizard.stepIndex}
-        totalSteps={wizard.totalSteps}
         onStepClick={wizard.goToStep}
       >
         <div className={showSidePreview ? 'grid grid-cols-1 lg:grid-cols-5 gap-8' : ''}>

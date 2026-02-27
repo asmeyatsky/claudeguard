@@ -3,7 +3,6 @@ import type { WizardStep } from '../../hooks/useConfigWizard'
 interface WizardShellProps {
   currentStep: WizardStep
   stepIndex: number
-  totalSteps: number
   onStepClick: (step: WizardStep) => void
   children: React.ReactNode
 }

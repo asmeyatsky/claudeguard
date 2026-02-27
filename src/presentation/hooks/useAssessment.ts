@@ -10,7 +10,7 @@ import {
   DIMENSION_ORDER,
   type DimensionId,
 } from '../../domain/value-objects/aria-dimensions'
-import { scoreAssessment, type AssessmentResult } from '../../application/use-cases/score-assessment'
+import { scoreAssessment, getRecommendations, type AssessmentResult } from '../../application/use-cases/score-assessment'
 
 export function useAssessment() {
   const [state, setState] = useState<AssessmentState>(createAssessmentState())
@@ -85,5 +85,6 @@ export function useAssessment() {
     goToNextDimension,
     viewResults,
     resetAssessment,
+    getRecommendations,
   }
 }

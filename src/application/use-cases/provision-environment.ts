@@ -2,6 +2,7 @@ import {
   type ProvisioningRequest,
   advanceStatus,
   completeProvisioning,
+  failProvisioning,
 } from '../../domain/entities/provisioning-request'
 import { PROVISIONING_STEPS, type ProvisioningStatus } from '../../domain/value-objects/provisioner-types'
 
@@ -24,16 +25,22 @@ export class ProvisionEnvironmentUseCase {
   ): Promise<ProvisioningRequest> {
     let current = request
 
-    for (const step of PROVISIONING_STEPS) {
-      // Simulate processing time (800ms - 2500ms per step)
-      const delay = 800 + Math.random() * 1700
-      await new Promise((resolve) => setTimeout(resolve, delay))
+    try {
+      for (const step of PROVISIONING_STEPS) {
+        // Simulate processing time (800ms - 2500ms per step)
+        const delay = 800 + Math.random() * 1700
+        await new Promise((resolve) => setTimeout(resolve, delay))
 
-      if (step.status === 'ready') {
-        current = completeProvisioning(current)
-      } else {
-        current = advanceStatus(current, step.status, STEP_MESSAGES[step.status])
+        if (step.status === 'ready') {
+          current = completeProvisioning(current)
+        } else {
+          current = advanceStatus(current, step.status, STEP_MESSAGES[step.status])
+        }
+        onProgress(current)
       }
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Unknown error during provisioning'
+      current = failProvisioning(current, message)
       onProgress(current)
     }
 

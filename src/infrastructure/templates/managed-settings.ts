@@ -11,7 +11,7 @@ export function generateManagedSettings(profile: ConfigProfile): GeneratedArtifa
   frameworks.forEach((fw) => {
     fw.controls.forEach((c) => {
       if (c.settingPath === 'permissions.denyPaths' && Array.isArray(c.settingValue)) {
-        ;(c.settingValue as string[]).forEach((p) => denyPaths.add(p))
+        c.settingValue.forEach((p) => denyPaths.add(p))
       }
     })
   })
@@ -23,7 +23,7 @@ export function generateManagedSettings(profile: ConfigProfile): GeneratedArtifa
   const retentionValues = frameworks
     .flatMap((fw) => fw.controls)
     .filter((c) => c.settingPath === 'transcript.retention')
-    .map((c) => c.settingValue as string)
+    .map((c) => String(c.settingValue))
 
   const shortestRetention = retentionValues.length > 0
     ? retentionValues.sort((a, b) => parseInt(a) - parseInt(b))[0]

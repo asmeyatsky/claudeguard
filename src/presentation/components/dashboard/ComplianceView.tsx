@@ -1,10 +1,10 @@
-import type { ComplianceControl } from '../../../domain/value-objects/dashboard-types'
+import type { DashboardComplianceControl } from '../../../domain/value-objects/dashboard-types'
 
 interface ComplianceViewProps {
-  controls: ComplianceControl[]
+  controls: DashboardComplianceControl[]
 }
 
-const statusConfig: Record<ComplianceControl['status'], { label: string; color: string; bg: string }> = {
+const statusConfig: Record<DashboardComplianceControl['status'], { label: string; color: string; bg: string }> = {
   passing: { label: 'Passing', color: 'text-emerald-accent', bg: 'bg-emerald-accent' },
   failing: { label: 'Failing', color: 'text-danger', bg: 'bg-danger' },
   'not-tested': { label: 'Not Tested', color: 'text-navy-500', bg: 'bg-navy-600' },
@@ -100,7 +100,10 @@ export default function ComplianceView({ controls }: ComplianceViewProps) {
           <h3 className="text-sm font-semibold text-white mb-1">Audit Report Generator</h3>
           <p className="text-xs text-navy-400">Generate audit-ready reports with scope statement, control descriptions, evidence references, and testing results.</p>
         </div>
-        <button className="px-5 py-2.5 bg-electric text-white text-sm font-medium rounded-lg hover:bg-electric-dark transition-all shrink-0">
+        <button
+          onClick={() => window.alert('Audit report generation will be available in a future release.')}
+          className="px-5 py-2.5 bg-electric text-white text-sm font-medium rounded-lg hover:bg-electric-dark transition-all shrink-0"
+        >
           Generate Report
         </button>
       </div>

@@ -1,9 +1,10 @@
 import type {
   SecurityEvent,
   EnvironmentStatus,
-  ComplianceControl,
+  DashboardComplianceControl,
   DashboardMetrics,
 } from '../domain/value-objects/dashboard-types'
+import type { TelemetryPort } from '../domain/ports/telemetry-port'
 
 const users = ['alice.chen', 'bob.kumar', 'carol.wright', 'david.okafor', 'elena.petrov', 'frank.garcia', 'gina.liu', 'henry.jones']
 const teams = ['Platform', 'Data Science', 'Backend', 'Infrastructure', 'ML Ops', 'Security']
@@ -127,8 +128,8 @@ export function generateEnvironments(count: number): EnvironmentStatus[] {
   })
 }
 
-export function generateComplianceControls(): ComplianceControl[] {
-  const controls: Omit<ComplianceControl, 'status' | 'evidenceAvailable' | 'lastVerified'>[] = [
+export function generateDashboardComplianceControls(): DashboardComplianceControl[] {
+  const controls: Omit<DashboardComplianceControl, 'status' | 'evidenceAvailable' | 'lastVerified'>[] = [
     { id: 'cc-1', framework: 'SOC 2', controlId: 'CC6.1', description: 'Logical access security — unauthorized access prevented' },
     { id: 'cc-2', framework: 'SOC 2', controlId: 'CC6.2', description: 'System access authenticated before access granted' },
     { id: 'cc-3', framework: 'SOC 2', controlId: 'CC6.3', description: 'Access to data restricted to authorized personnel' },
@@ -152,7 +153,7 @@ export function generateComplianceControls(): ComplianceControl[] {
     { id: 'cc-21', framework: 'GDPR', controlId: 'Art. 33', description: 'Notification of personal data breach within 72 hours' },
   ]
 
-  const statusWeights: ComplianceControl['status'][] = ['passing', 'passing', 'passing', 'passing', 'passing', 'failing', 'not-tested']
+  const statusWeights: DashboardComplianceControl['status'][] = ['passing', 'passing', 'passing', 'passing', 'passing', 'failing', 'not-tested']
 
   return controls.map((c) => ({
     ...c,
@@ -176,5 +177,20 @@ export function generateMetrics(): DashboardMetrics {
     avgMemoryUsage: randomBetween(35, 65),
     apiTokensUsed: Math.floor(randomBetween(500000, 3000000)),
     costEstimate: randomBetween(2400, 8500),
+  }
+}
+
+export class MockTelemetryAdapter implements TelemetryPort {
+  getEvents(count: number): SecurityEvent[] {
+    return generateEvents(count)
+  }
+  getEnvironments(count: number): EnvironmentStatus[] {
+    return generateEnvironments(count)
+  }
+  getComplianceControls(): DashboardComplianceControl[] {
+    return generateComplianceControls()
+  }
+  getMetrics(): DashboardMetrics {
+    return generateMetrics()
   }
 }

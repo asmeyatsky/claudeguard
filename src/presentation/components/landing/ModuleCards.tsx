@@ -12,7 +12,6 @@ const modules = [
     textColor: 'text-electric',
     href: '/assessment',
     cta: 'Start Assessment',
-    available: true,
   },
   {
     phase: 2,
@@ -25,7 +24,6 @@ const modules = [
     textColor: 'text-amber-accent',
     href: '/configurator',
     cta: 'Open Configurator',
-    available: true,
   },
   {
     phase: 3,
@@ -38,7 +36,6 @@ const modules = [
     textColor: 'text-emerald-accent',
     href: '/provisioner',
     cta: 'Open Provisioner',
-    available: true,
   },
   {
     phase: 4,
@@ -51,7 +48,6 @@ const modules = [
     textColor: 'text-danger',
     href: '/dashboard',
     cta: 'Open Dashboard',
-    available: true,
   },
 ]
 
@@ -71,7 +67,7 @@ export default function ModuleCards() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
           {modules.map((mod) => (
-            <div key={mod.name} className={`rounded-xl border ${mod.borderColor} ${mod.bgColor} p-7 transition-all ${mod.available ? 'hover:shadow-lg' : 'opacity-70'}`}>
+            <div key={mod.name} className={`rounded-xl border ${mod.borderColor} ${mod.bgColor} p-7 transition-all hover:shadow-lg`}>
               <div className="flex items-center gap-3 mb-4">
                 <div className={`w-9 h-9 rounded-lg ${mod.bgColor} ${mod.textColor} flex items-center justify-center font-bold text-sm border ${mod.borderColor}`}>
                   {mod.phase}
@@ -82,18 +78,12 @@ export default function ModuleCards() {
                 </div>
               </div>
               <p className="text-sm text-navy-400 mb-6 leading-relaxed">{mod.description}</p>
-              {mod.available ? (
-                <Link to={mod.href} className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium border ${mod.borderColor} ${mod.textColor} hover:${mod.bgColor} transition-all`}>
-                  {mod.cta}
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                  </svg>
-                </Link>
-              ) : (
-                <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium border border-navy-800 text-navy-600">
-                  {mod.cta}
-                </span>
-              )}
+              <Link to={mod.href} className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-lg text-sm font-medium border ${mod.borderColor} ${mod.textColor} hover:${mod.bgColor} transition-all`}>
+                {mod.cta}
+                <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </Link>
             </div>
           ))}
         </div>

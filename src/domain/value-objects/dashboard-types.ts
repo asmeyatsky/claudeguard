@@ -25,7 +25,7 @@ export interface EnvironmentStatus {
   readonly lastActivity: string
 }
 
-export interface ComplianceControl {
+export interface DashboardComplianceControl {
   readonly id: string
   readonly framework: string
   readonly controlId: string

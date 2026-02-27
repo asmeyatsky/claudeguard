@@ -1,6 +1,5 @@
 import type { AssessmentResult } from '../../../domain/entities/assessment'
 import { DIMENSIONS } from '../../../domain/value-objects/aria-dimensions'
-import { getRecommendations } from '../../../application/use-cases/score-assessment'
 import RadarChart from './RadarChart'
 import { Link } from '../shared/Router'
 
@@ -9,6 +8,7 @@ interface ResultsPanelProps {
   totalAnswered: number
   totalQuestions: number
   onReset: () => void
+  getRecommendations: (dimensionId: string, currentScore: number) => string[]
 }
 
 const readinessLabels: Record<string, { label: string; color: string; bgColor: string }> = {
@@ -26,7 +26,7 @@ const priorityColors: Record<string, string> = {
   low: 'text-navy-400 bg-navy-800 border-navy-700',
 }
 
-export default function ResultsPanel({ result, totalAnswered, totalQuestions, onReset }: ResultsPanelProps) {
+export default function ResultsPanel({ result, totalAnswered, totalQuestions, onReset, getRecommendations }: ResultsPanelProps) {
   const readiness = readinessLabels[result.deploymentReadiness]
   const completionPct = Math.round((totalAnswered / totalQuestions) * 100)
 

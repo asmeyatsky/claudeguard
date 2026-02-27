@@ -13,12 +13,14 @@ export default function TargetSelector({ selected, onSelect }: Props) {
       <h2 className="text-xl font-bold text-white mb-2">Select Deployment Target</h2>
       <p className="text-navy-400 text-sm mb-6">Choose where your sandboxed Claude Code environment will run</p>
 
-      <div className="grid gap-3">
+      <div className="grid gap-3" role="radiogroup" aria-label="Deployment target">
         {targets.map((t) => {
           const isSelected = t.id === selected
           return (
             <button
               key={t.id}
+              role="radio"
+              aria-checked={isSelected}
               onClick={() => onSelect(t.id)}
               className={`text-left p-4 rounded-xl border transition-all ${
                 isSelected
