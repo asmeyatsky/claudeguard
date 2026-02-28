@@ -53,13 +53,13 @@ export default function Hero() {
         <div className="flex items-center justify-center gap-4 mb-16">
           <Link
             to="/assessment"
-            className="px-8 py-3 bg-electric text-white font-semibold rounded-lg hover:bg-electric-dark transition-all shadow-lg shadow-electric/25 animate-pulse-glow"
+            className="px-8 py-3 bg-electric text-white font-semibold rounded-lg hover:bg-electric-dark transition-colors shadow-lg shadow-electric/25 animate-pulse-glow"
           >
             Start Assessment
           </Link>
           <Link
             to="/configurator"
-            className="px-8 py-3 border border-navy-700 text-navy-300 font-semibold rounded-lg hover:border-electric/50 hover:text-white transition-all"
+            className="px-8 py-3 border border-navy-700 text-navy-300 font-semibold rounded-lg hover:border-electric/50 hover:text-white transition-colors"
           >
             Security Configurator
           </Link>

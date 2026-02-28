@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react'
 import type { DashboardMetrics, SecurityEvent, EnvironmentStatus } from '../../../domain/value-objects/dashboard-types'
 
 interface ExecutiveViewProps {
@@ -12,21 +13,34 @@ const scoreColor = (score: number) =>
 const scoreRing = (score: number) =>
   score >= 90 ? 'stroke-emerald-accent' : score >= 70 ? 'stroke-amber-accent' : 'stroke-danger'
 
-export default function ExecutiveView({ metrics, events, environments }: ExecutiveViewProps) {
-  const criticalEvents = events.filter((e) => e.severity === 'critical')
-  const unresolvedCritical = criticalEvents.filter((e) => !e.resolved)
+export default memo(function ExecutiveView({ metrics, events, environments }: ExecutiveViewProps) {
+  const unresolvedCritical = useMemo(
+    () => events.filter((e) => e.severity === 'critical' && !e.resolved),
+    [events]
+  )
 
-  const teamCounts = environments.reduce<Record<string, number>>((acc, env) => {
-    acc[env.team] = (acc[env.team] || 0) + 1
-    return acc
-  }, {})
+  const teamCounts = useMemo(
+    () => environments.reduce<Record<string, number>>((acc, env) => {
+      acc[env.team] = (acc[env.team] || 0) + 1
+      return acc
+    }, {}),
+    [environments]
+  )
 
-  const statusCounts = environments.reduce<Record<string, number>>((acc, env) => {
-    acc[env.status] = (acc[env.status] || 0) + 1
-    return acc
-  }, {})
+  const statusCounts = useMemo(
+    () => environments.reduce<Record<string, number>>((acc, env) => {
+      acc[env.status] = (acc[env.status] || 0) + 1
+      return acc
+    }, {}),
+    [environments]
+  )
 
-  const driftCount = events.filter((e) => e.type === 'config_drift').length
+  const driftCount = useMemo(
+    () => events.filter((e) => e.type === 'config_drift').length,
+    [events]
+  )
+
+  const recentEvents = useMemo(() => events.slice(0, 8), [events])
 
   // SVG donut for security score
   const circumference = 2 * Math.PI * 45
@@ -101,7 +115,7 @@ export default function ExecutiveView({ metrics, events, environments }: Executi
                       <span className="text-navy-500">{count}</span>
                     </div>
                     <div className="h-2 bg-navy-800 rounded-full overflow-hidden">
-                      <div className="h-full bg-electric rounded-full transition-all" style={{ width: `${pct}%` }} />
+                      <div className="h-full bg-electric rounded-full" style={{ width: `${pct}%` }} />
                     </div>
                   </div>
                 )
@@ -138,7 +152,7 @@ export default function ExecutiveView({ metrics, events, environments }: Executi
               { count: statusCounts['offline'] || 0, color: 'bg-navy-600' },
             ].map((s, i) => {
               const total = environments.length || 1
-              return <div key={i} className={`${s.color} transition-all`} style={{ width: `${(s.count / total) * 100}%` }} />
+              return <div key={i} className={s.color} style={{ width: `${(s.count / total) * 100}%` }} />
             })}
           </div>
         </div>
@@ -148,7 +162,7 @@ export default function ExecutiveView({ metrics, events, environments }: Executi
       <div className="glass-card rounded-xl p-5">
         <h3 className="text-sm font-semibold text-white mb-4">Recent Security Events</h3>
         <div className="space-y-2">
-          {events.slice(0, 8).map((event) => {
+          {recentEvents.map((event) => {
             const sevColors: Record<string, string> = {
               critical: 'text-danger bg-danger/10',
               high: 'text-amber-accent bg-amber-accent/10',
@@ -172,4 +186,4 @@ export default function ExecutiveView({ metrics, events, environments }: Executi
       </div>
     </div>
   )
-}
+})

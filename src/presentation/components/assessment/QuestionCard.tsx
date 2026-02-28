@@ -25,7 +25,7 @@ export default memo(function QuestionCard({ question, index, selectedScore, onAn
             <button
               key={option.score}
               onClick={() => onAnswer(question.id, option.score)}
-              className={`w-full text-left px-4 py-3 rounded-lg transition-all border flex items-center gap-3 ${
+              className={`w-full text-left px-4 py-3 rounded-lg transition-colors border flex items-center gap-3 ${
                 isSelected
                   ? 'border-electric bg-electric/10 text-white'
                   : 'border-navy-800 hover:border-navy-700 text-navy-400 hover:text-navy-300'

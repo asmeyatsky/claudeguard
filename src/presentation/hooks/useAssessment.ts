@@ -17,7 +17,7 @@ export function useAssessment() {
   const [activeDimension, setActiveDimension] = useState<DimensionId>('infrastructure')
   const [showResults, setShowResults] = useState(false)
 
-  // Use refs to avoid stale closures in callbacks without adding dependencies
+  // Stable refs for use in callbacks
   const activeDimensionRef = useRef(activeDimension)
   activeDimensionRef.current = activeDimension
   const stateRef = useRef(state)
@@ -28,9 +28,16 @@ export function useAssessment() {
     [activeDimension]
   )
 
+  // Only recompute scores when answers actually change (by key count + values)
+  const answersKey = useMemo(() => {
+    const entries = Object.entries(state.answers)
+    return entries.map(([k, v]) => `${k}:${v}`).join('|')
+  }, [state.answers])
+
   const result: AssessmentResult = useMemo(
     () => scoreAssessment(state),
-    [state]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [answersKey]
   )
 
   const answeredInDimension = useMemo(
@@ -49,7 +56,6 @@ export function useAssessment() {
   const goToDimension = useCallback((dimId: DimensionId) => {
     const currentDim = activeDimensionRef.current
     const currentAnswers = stateRef.current.answers
-    // Mark current dimension as complete if all questions answered
     const currentQuestions = QUESTIONS.filter((q) => q.dimension === currentDim)
     const allAnswered = currentQuestions.every((q) => currentAnswers[q.id] !== undefined)
     if (allAnswered) {
@@ -57,6 +63,8 @@ export function useAssessment() {
     }
     setActiveDimension(dimId)
     setShowResults(false)
+    // Scroll to top of content area when switching dimensions
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
   const goToNextDimension = useCallback(() => {
@@ -65,17 +73,20 @@ export function useAssessment() {
       goToDimension(DIMENSION_ORDER[currentIndex + 1])
     } else {
       setShowResults(true)
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }, [goToDimension])
 
   const viewResults = useCallback(() => {
     setShowResults(true)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
   const resetAssessment = useCallback(() => {
     setState(createAssessmentState())
     setActiveDimension('infrastructure')
     setShowResults(false)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
   return {

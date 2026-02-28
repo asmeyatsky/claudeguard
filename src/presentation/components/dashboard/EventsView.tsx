@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { memo, useState, useMemo } from 'react'
 import type { SecurityEvent } from '../../../domain/value-objects/dashboard-types'
 
 interface EventsViewProps {
@@ -34,22 +34,28 @@ const sevColors: Record<SecurityEvent['severity'], string> = {
   info: 'text-navy-500 bg-navy-800 border-navy-700',
 }
 
-export default function EventsView({ events }: EventsViewProps) {
+export default memo(function EventsView({ events }: EventsViewProps) {
   const [typeFilter, setTypeFilter] = useState<FilterType>('all')
   const [sevFilter, setSevFilter] = useState<FilterSeverity>('all')
   const [searchQuery, setSearchQuery] = useState('')
 
-  const filtered = events.filter((e) => {
-    if (typeFilter !== 'all' && e.type !== typeFilter) return false
-    if (sevFilter !== 'all' && e.severity !== sevFilter) return false
-    if (searchQuery && !e.detail.toLowerCase().includes(searchQuery.toLowerCase()) && !e.user.toLowerCase().includes(searchQuery.toLowerCase())) return false
-    return true
-  })
+  const filtered = useMemo(
+    () => events.filter((e) => {
+      if (typeFilter !== 'all' && e.type !== typeFilter) return false
+      if (sevFilter !== 'all' && e.severity !== sevFilter) return false
+      if (searchQuery && !e.detail.toLowerCase().includes(searchQuery.toLowerCase()) && !e.user.toLowerCase().includes(searchQuery.toLowerCase())) return false
+      return true
+    }),
+    [events, typeFilter, sevFilter, searchQuery]
+  )
 
-  const typeCounts = events.reduce<Record<string, number>>((acc, e) => {
-    acc[e.type] = (acc[e.type] || 0) + 1
-    return acc
-  }, {})
+  const typeCounts = useMemo(
+    () => events.reduce<Record<string, number>>((acc, e) => {
+      acc[e.type] = (acc[e.type] || 0) + 1
+      return acc
+    }, {}),
+    [events]
+  )
 
   return (
     <div className="space-y-6">
@@ -57,7 +63,7 @@ export default function EventsView({ events }: EventsViewProps) {
       <div className="flex flex-wrap gap-2">
         <button
           onClick={() => setTypeFilter('all')}
-          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${
+          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
             typeFilter === 'all' ? 'border-electric text-electric bg-electric/10' : 'border-navy-800 text-navy-500 hover:text-navy-300'
           }`}
         >
@@ -67,7 +73,7 @@ export default function EventsView({ events }: EventsViewProps) {
           <button
             key={type}
             onClick={() => setTypeFilter(typeFilter === type ? 'all' : type)}
-            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all border ${
+            className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-colors border ${
               typeFilter === type ? `${typeColors[type]} border-current` : 'border-navy-800 text-navy-500 hover:text-navy-300'
             }`}
           >
@@ -83,7 +89,7 @@ export default function EventsView({ events }: EventsViewProps) {
             <button
               key={sev}
               onClick={() => setSevFilter(sev)}
-              className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase transition-all ${
+              className={`px-2.5 py-1 rounded text-[10px] font-bold uppercase transition-colors ${
                 sevFilter === sev
                   ? sev === 'all' ? 'bg-electric/10 text-electric' : sevColors[sev as SecurityEvent['severity']]
                   : 'text-navy-600 hover:text-navy-400'
@@ -157,4 +163,4 @@ export default function EventsView({ events }: EventsViewProps) {
       </div>
     </div>
   )
-}
+})

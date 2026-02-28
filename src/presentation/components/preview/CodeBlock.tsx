@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 
 interface CodeBlockProps {
   code: string
@@ -16,16 +16,18 @@ const languageColors: Record<string, string> = {
 
 export default function CodeBlock({ code, language, filename }: CodeBlockProps) {
   const [copied, setCopied] = useState(false)
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null)
 
-  const handleCopy = async () => {
+  const handleCopy = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(code)
       setCopied(true)
-      setTimeout(() => setCopied(false), 2000)
+      if (timerRef.current) clearTimeout(timerRef.current)
+      timerRef.current = setTimeout(() => setCopied(false), 2000)
     } catch {
       // Clipboard API not available in insecure contexts
     }
-  }
+  }, [code])
 
   return (
     <div className="rounded-lg border border-navy-800 overflow-hidden">

@@ -30,7 +30,7 @@ export default function ProvisionerPage() {
           {STEP_LABELS.slice(0, 3).map((label, i) => (
             <div key={label} className="flex items-center gap-2">
               <div
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
                   i === p.stepIndex
                     ? 'bg-emerald-accent/10 text-emerald-accent border border-emerald-accent/30'
                     : i < p.stepIndex

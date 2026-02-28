@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react'
 import type { DashboardMetrics, EnvironmentStatus } from '../../../domain/value-objects/dashboard-types'
 
 interface OperationalViewProps {
@@ -12,22 +13,30 @@ const statusColors: Record<EnvironmentStatus['status'], { dot: string; text: str
   offline: { dot: 'bg-navy-600', text: 'text-navy-500' },
 }
 
-export default function OperationalView({ metrics, environments }: OperationalViewProps) {
+export default memo(function OperationalView({ metrics, environments }: OperationalViewProps) {
   const formatTokens = (n: number) => {
     if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`
     if (n >= 1000) return `${(n / 1000).toFixed(0)}K`
     return n.toString()
   }
 
-  const cloudCounts = environments.reduce<Record<string, number>>((acc, e) => {
-    acc[e.cloudProvider] = (acc[e.cloudProvider] || 0) + 1
-    return acc
-  }, {})
+  const cloudCounts = useMemo(
+    () => environments.reduce<Record<string, number>>((acc, e) => {
+      acc[e.cloudProvider] = (acc[e.cloudProvider] || 0) + 1
+      return acc
+    }, {}),
+    [environments]
+  )
 
-  const profileCounts = environments.reduce<Record<string, number>>((acc, e) => {
-    acc[e.riskProfile] = (acc[e.riskProfile] || 0) + 1
-    return acc
-  }, {})
+  const profileCounts = useMemo(
+    () => environments.reduce<Record<string, number>>((acc, e) => {
+      acc[e.riskProfile] = (acc[e.riskProfile] || 0) + 1
+      return acc
+    }, {}),
+    [environments]
+  )
+
+  const displayedEnvs = useMemo(() => environments.slice(0, 20), [environments])
 
   return (
     <div className="space-y-6">
@@ -50,7 +59,7 @@ export default function OperationalView({ metrics, environments }: OperationalVi
           <div className="text-xs text-navy-500">API Tokens (24h)</div>
         </div>
         <div className="glass-card rounded-xl p-5 text-center">
-          <div className="text-3xl font-bold text-white mb-1">£{metrics.costEstimate.toLocaleString()}</div>
+          <div className="text-3xl font-bold text-white mb-1">{metrics.costEstimate.toLocaleString()}</div>
           <div className="text-xs text-navy-500">Est. Monthly Cost</div>
         </div>
       </div>
@@ -118,7 +127,7 @@ export default function OperationalView({ metrics, environments }: OperationalVi
               </tr>
             </thead>
             <tbody>
-              {environments.slice(0, 20).map((env) => {
+              {displayedEnvs.map((env) => {
                 const sc = statusColors[env.status]
                 return (
                   <tr key={env.id} className="border-b border-navy-800/30 hover:bg-navy-800/20">
@@ -164,4 +173,4 @@ export default function OperationalView({ metrics, environments }: OperationalVi
       </div>
     </div>
   )
-}
+})

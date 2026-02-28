@@ -26,17 +26,20 @@ export function useConfigWizard() {
   const goNext = useCallback(() => {
     if (stepIndex < STEPS.length - 1) {
       setCurrentStep(STEPS[stepIndex + 1])
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }, [stepIndex])
 
   const goBack = useCallback(() => {
     if (stepIndex > 0) {
       setCurrentStep(STEPS[stepIndex - 1])
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }, [stepIndex])
 
   const goToStep = useCallback((step: WizardStep) => {
     setCurrentStep(step)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
   const setComplianceFrameworks = useCallback((frameworks: ComplianceFrameworkId[]) => {

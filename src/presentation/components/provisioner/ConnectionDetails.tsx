@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useCallback } from 'react'
 import type { ProvisioningRequest } from '../../../domain/entities/provisioning-request'
 
 interface Props {
@@ -8,20 +8,22 @@ interface Props {
 
 export default function ConnectionDetails({ request, onReset }: Props) {
   const [copiedField, setCopiedField] = useState<string | null>(null)
+  const timerRef = useRef<ReturnType<typeof setTimeout>>(null)
+
+  const copyToClipboard = useCallback(async (text: string, label: string) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      setCopiedField(label)
+      if (timerRef.current) clearTimeout(timerRef.current)
+      timerRef.current = setTimeout(() => setCopiedField(null), 2000)
+    } catch {
+      // Clipboard API not available
+    }
+  }, [])
 
   if (!request.connectionDetails) return null
 
   const { connectionDetails: cd } = request
-
-  const copyToClipboard = async (text: string, label: string) => {
-    try {
-      await navigator.clipboard.writeText(text)
-      setCopiedField(label)
-      setTimeout(() => setCopiedField(null), 2000)
-    } catch {
-      // Clipboard API not available
-    }
-  }
 
   const fields = [
     { label: 'VS Code Remote', value: cd.vscodeUrl, icon: '💻' },

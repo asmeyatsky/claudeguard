@@ -42,7 +42,7 @@ export default function DashboardPage() {
           <button
             key={view.id}
             onClick={() => setActiveView(view.id)}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm transition-all border ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm transition-colors border ${
               activeView === view.id
                 ? 'border-electric bg-electric/10 text-electric'
                 : 'border-navy-800 text-navy-500 hover:text-navy-300 hover:border-navy-700'

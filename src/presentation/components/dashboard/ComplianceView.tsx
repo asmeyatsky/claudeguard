@@ -1,3 +1,4 @@
+import { memo, useMemo } from 'react'
 import type { DashboardComplianceControl } from '../../../domain/value-objects/dashboard-types'
 
 interface ComplianceViewProps {
@@ -11,22 +12,27 @@ const statusConfig: Record<DashboardComplianceControl['status'], { label: string
   'not-applicable': { label: 'N/A', color: 'text-navy-600', bg: 'bg-navy-700' },
 }
 
-export default function ComplianceView({ controls }: ComplianceViewProps) {
-  const frameworks = [...new Set(controls.map((c) => c.framework))]
-
-  const frameworkStats = frameworks.map((fw) => {
-    const fwControls = controls.filter((c) => c.framework === fw)
-    const passing = fwControls.filter((c) => c.status === 'passing').length
-    const failing = fwControls.filter((c) => c.status === 'failing').length
-    const total = fwControls.filter((c) => c.status !== 'not-applicable').length
-    const rate = total > 0 ? Math.round((passing / total) * 100) : 0
-    return { framework: fw, passing, failing, total, rate, controls: fwControls }
-  })
-
-  const overallPassing = controls.filter((c) => c.status === 'passing').length
-  const overallTotal = controls.filter((c) => c.status !== 'not-applicable').length
-  const overallRate = overallTotal > 0 ? Math.round((overallPassing / overallTotal) * 100) : 0
-  const evidenceAvailable = controls.filter((c) => c.evidenceAvailable).length
+export default memo(function ComplianceView({ controls }: ComplianceViewProps) {
+  const { frameworkStats, overallRate, overallPassing, failingCount, evidenceAvailable } = useMemo(() => {
+    const frameworks = [...new Set(controls.map((c) => c.framework))]
+    const stats = frameworks.map((fw) => {
+      const fwControls = controls.filter((c) => c.framework === fw)
+      const passing = fwControls.filter((c) => c.status === 'passing').length
+      const failing = fwControls.filter((c) => c.status === 'failing').length
+      const total = fwControls.filter((c) => c.status !== 'not-applicable').length
+      const rate = total > 0 ? Math.round((passing / total) * 100) : 0
+      return { framework: fw, passing, failing, total, rate, controls: fwControls }
+    })
+    const op = controls.filter((c) => c.status === 'passing').length
+    const ot = controls.filter((c) => c.status !== 'not-applicable').length
+    return {
+      frameworkStats: stats,
+      overallRate: ot > 0 ? Math.round((op / ot) * 100) : 0,
+      overallPassing: op,
+      failingCount: controls.filter((c) => c.status === 'failing').length,
+      evidenceAvailable: controls.filter((c) => c.evidenceAvailable).length,
+    }
+  }, [controls])
 
   return (
     <div className="space-y-6">
@@ -43,8 +49,8 @@ export default function ComplianceView({ controls }: ComplianceViewProps) {
           <div className="text-xs text-navy-500">Controls Passing</div>
         </div>
         <div className="glass-card rounded-xl p-5 text-center">
-          <div className={`text-3xl font-bold mb-1 ${controls.filter((c) => c.status === 'failing').length > 0 ? 'text-danger' : 'text-emerald-accent'}`}>
-            {controls.filter((c) => c.status === 'failing').length}
+          <div className={`text-3xl font-bold mb-1 ${failingCount > 0 ? 'text-danger' : 'text-emerald-accent'}`}>
+            {failingCount}
           </div>
           <div className="text-xs text-navy-500">Controls Failing</div>
         </div>
@@ -102,11 +108,11 @@ export default function ComplianceView({ controls }: ComplianceViewProps) {
         </div>
         <button
           onClick={() => window.alert('Audit report generation will be available in a future release.')}
-          className="px-5 py-2.5 bg-electric text-white text-sm font-medium rounded-lg hover:bg-electric-dark transition-all shrink-0"
+          className="px-5 py-2.5 bg-electric text-white text-sm font-medium rounded-lg hover:bg-electric-dark transition-colors shrink-0"
         >
           Generate Report
         </button>
       </div>
     </div>
   )
-}
+})

@@ -29,12 +29,14 @@ export function useProvisioner() {
   const goNext = useCallback(() => {
     if (stepIndex < STEPS.length - 1) {
       setCurrentStep(STEPS[stepIndex + 1])
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }, [stepIndex])
 
   const goBack = useCallback(() => {
     if (stepIndex > 0) {
       setCurrentStep(STEPS[stepIndex - 1])
+      window.scrollTo({ top: 0, behavior: 'smooth' })
     }
   }, [stepIndex])
 
@@ -65,6 +67,7 @@ export function useProvisioner() {
     setCurrentStep('provisioning')
     setIsProvisioning(true)
     setError(null)
+    window.scrollTo({ top: 0, behavior: 'smooth' })
 
     try {
       const final = await provisionEnvironmentUseCase.execute(request, (updated) => {
@@ -91,6 +94,7 @@ export function useProvisioner() {
     setUserName('')
     setTeamName('')
     setMcpServers([])
+    window.scrollTo({ top: 0, behavior: 'smooth' })
   }, [])
 
   return {
