@@ -8,7 +8,7 @@ export default function Footer() {
           <span className="text-xs text-navy-600 ml-2">Enterprise Security Lifecycle for Agentic AI</span>
         </div>
         <p className="text-navy-600 text-xs">
-          &copy; {new Date().getFullYear()} Allan Smeyatsky. Google Cloud Partner All-Star 2024.
+          &copy; {new Date().getFullYear()} Smeyatsky Labs
         </p>
       </div>
     </footer>
