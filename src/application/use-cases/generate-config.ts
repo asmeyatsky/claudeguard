@@ -8,10 +8,13 @@ export interface GenerateConfigResult {
 }
 
 export class GenerateConfigUseCase {
-  constructor(
-    private readonly templateEngine: TemplateEnginePort,
-    private readonly packager: PackagerPort
-  ) {}
+  readonly templateEngine: TemplateEnginePort
+  readonly packager: PackagerPort
+
+  constructor(templateEngine: TemplateEnginePort, packager: PackagerPort) {
+    this.templateEngine = templateEngine
+    this.packager = packager
+  }
 
   generateArtifacts(profile: ConfigProfile): GeneratedArtifact[] {
     return this.templateEngine.generateAll(profile)

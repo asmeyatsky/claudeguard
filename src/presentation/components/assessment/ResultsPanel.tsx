@@ -1,5 +1,5 @@
 import type { AssessmentResult } from '../../../domain/entities/assessment'
-import { DIMENSIONS } from '../../../domain/value-objects/aria-dimensions'
+import { DIMENSIONS, type DimensionId } from '../../../domain/value-objects/aria-dimensions'
 import RadarChart from './RadarChart'
 import { Link } from '../shared/Router'
 
@@ -8,7 +8,7 @@ interface ResultsPanelProps {
   totalAnswered: number
   totalQuestions: number
   onReset: () => void
-  getRecommendations: (dimensionId: string, currentScore: number) => string[]
+  getRecommendations: (dimensionId: DimensionId, currentScore: number) => string[]
 }
 
 const readinessLabels: Record<string, { label: string; color: string; bgColor: string }> = {

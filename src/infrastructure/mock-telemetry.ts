@@ -188,7 +188,7 @@ export class MockTelemetryAdapter implements TelemetryPort {
     return generateEnvironments(count)
   }
   getComplianceControls(): DashboardComplianceControl[] {
-    return generateComplianceControls()
+    return generateDashboardComplianceControls()
   }
   getMetrics(): DashboardMetrics {
     return generateMetrics()

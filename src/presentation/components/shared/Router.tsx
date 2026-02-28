@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo, createContext, useContext, useCallback, type ReactNode } from 'react'
+import { type JSX, useState, useEffect, useMemo, createContext, useContext, useCallback, type ReactNode } from 'react'
 
 interface RouterContextValue {
   path: string
