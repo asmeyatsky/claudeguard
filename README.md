@@ -55,4 +55,4 @@ The Security Configurator generates a complete deployment package:
 
 ## Author
 
-Allan Smeyatsky — Google Cloud Partner All-Star 2024, Google UK CTO Council Member
+Allan Smeyatsky
