@@ -1,4 +1,4 @@
-import { useState, useEffect, createContext, useContext, useCallback, type ReactNode } from 'react'
+import { useState, useEffect, useMemo, createContext, useContext, useCallback, type ReactNode } from 'react'
 
 interface RouterContextValue {
   path: string
@@ -29,8 +29,10 @@ export function Router({ children }: { children: ReactNode }) {
     window.location.hash = to
   }, [])
 
+  const value = useMemo(() => ({ path, navigate }), [path, navigate])
+
   return (
-    <RouterContext.Provider value={{ path, navigate }}>
+    <RouterContext.Provider value={value}>
       {children}
     </RouterContext.Provider>
   )

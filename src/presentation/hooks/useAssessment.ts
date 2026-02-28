@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback } from 'react'
+import { useState, useRef, useMemo, useCallback } from 'react'
 import {
   createAssessmentState,
   setAnswer,
@@ -16,6 +16,12 @@ export function useAssessment() {
   const [state, setState] = useState<AssessmentState>(createAssessmentState())
   const [activeDimension, setActiveDimension] = useState<DimensionId>('infrastructure')
   const [showResults, setShowResults] = useState(false)
+
+  // Use refs to avoid stale closures in callbacks without adding dependencies
+  const activeDimensionRef = useRef(activeDimension)
+  activeDimensionRef.current = activeDimension
+  const stateRef = useRef(state)
+  stateRef.current = state
 
   const dimensionQuestions = useMemo(
     () => QUESTIONS.filter((q) => q.dimension === activeDimension),
@@ -41,24 +47,26 @@ export function useAssessment() {
   }, [])
 
   const goToDimension = useCallback((dimId: DimensionId) => {
+    const currentDim = activeDimensionRef.current
+    const currentAnswers = stateRef.current.answers
     // Mark current dimension as complete if all questions answered
-    const currentQuestions = QUESTIONS.filter((q) => q.dimension === activeDimension)
-    const allAnswered = currentQuestions.every((q) => state.answers[q.id] !== undefined)
+    const currentQuestions = QUESTIONS.filter((q) => q.dimension === currentDim)
+    const allAnswered = currentQuestions.every((q) => currentAnswers[q.id] !== undefined)
     if (allAnswered) {
-      setState((prev) => markDimensionComplete(prev, activeDimension))
+      setState((prev) => markDimensionComplete(prev, currentDim))
     }
     setActiveDimension(dimId)
     setShowResults(false)
-  }, [activeDimension, state.answers])
+  }, [])
 
   const goToNextDimension = useCallback(() => {
-    const currentIndex = DIMENSION_ORDER.indexOf(activeDimension)
+    const currentIndex = DIMENSION_ORDER.indexOf(activeDimensionRef.current)
     if (currentIndex < DIMENSION_ORDER.length - 1) {
       goToDimension(DIMENSION_ORDER[currentIndex + 1])
     } else {
       setShowResults(true)
     }
-  }, [activeDimension, goToDimension])
+  }, [goToDimension])
 
   const viewResults = useCallback(() => {
     setShowResults(true)
