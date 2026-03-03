@@ -1,4 +1,4 @@
-import { memo } from 'react'
+import { memo, useRef, useEffect } from 'react'
 import { DIMENSIONS } from '../../domain/value-objects/aria-dimensions'
 import type { DimensionId } from '../../domain/value-objects/aria-dimensions'
 import { useAssessment } from '../hooks/useAssessment'
@@ -16,9 +16,16 @@ const ProgressBar = memo(function ProgressBar({ totalAnswered, totalQuestions, p
     <div className="mb-6">
       <div className="flex items-center justify-between mb-2">
         <h1 className="text-xl font-bold text-white">ARIA Assessment</h1>
-        <span className="text-xs text-navy-500">{totalAnswered}/{totalQuestions} questions ({progress}%)</span>
+        <span className="text-xs text-navy-500" aria-live="polite">{totalAnswered}/{totalQuestions} questions ({progress}%)</span>
       </div>
-      <div className="h-1.5 bg-navy-800 rounded-full overflow-hidden">
+      <div
+        className="h-1.5 bg-navy-800 rounded-full overflow-hidden"
+        role="progressbar"
+        aria-valuenow={progress}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={`Assessment progress: ${progress}%`}
+      >
         <div className="h-full bg-electric rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
       </div>
     </div>
@@ -66,6 +73,22 @@ export default function AssessmentPage() {
     getRecommendations,
   } = useAssessment()
 
+  const contentRef = useRef<HTMLDivElement>(null)
+  const prevDimensionRef = useRef(activeDimension)
+  const prevShowResultsRef = useRef(showResults)
+
+  // Move focus to content area when dimension changes or results toggle,
+  // so screen readers announce the new content instead of re-reading the whole page
+  useEffect(() => {
+    if (prevDimensionRef.current !== activeDimension || prevShowResultsRef.current !== showResults) {
+      prevDimensionRef.current = activeDimension
+      prevShowResultsRef.current = showResults
+      contentRef.current?.focus({ preventScroll: true })
+    }
+  }, [activeDimension, showResults])
+
+  const dim = DIMENSIONS[activeDimension]
+
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <ProgressBar totalAnswered={totalAnswered} totalQuestions={totalQuestions} progress={progress} />
@@ -84,7 +107,7 @@ export default function AssessmentPage() {
 
             {/* Mini radar — only show when there are answers */}
             {totalAnswered > 0 && !showResults && (
-              <div className="glass-card rounded-xl p-4">
+              <div className="glass-card rounded-xl p-4" aria-hidden="true">
                 <RadarChart scores={result.dimensionScores} size={200} />
               </div>
             )}
@@ -92,7 +115,15 @@ export default function AssessmentPage() {
         </div>
 
         {/* Main content */}
-        <div className="lg:col-span-9">
+        <div
+          ref={contentRef}
+          className="lg:col-span-9 outline-none"
+          tabIndex={-1}
+          role="region"
+          aria-label={showResults ? 'Assessment results' : `${dim.name} questions`}
+          aria-live="polite"
+          aria-atomic="false"
+        >
           {showResults ? (
             <ResultsPanel
               result={result}
@@ -110,15 +141,18 @@ export default function AssessmentPage() {
               />
 
               {/* Questions */}
-              {dimensionQuestions.map((q, i) => (
-                <QuestionCard
-                  key={q.id}
-                  question={q}
-                  index={i}
-                  selectedScore={state.answers[q.id]}
-                  onAnswer={answerQuestion}
-                />
-              ))}
+              <div role="list" aria-label={`${dim.name} questions`}>
+                {dimensionQuestions.map((q, i) => (
+                  <div key={q.id} role="listitem">
+                    <QuestionCard
+                      question={q}
+                      index={i}
+                      selectedScore={state.answers[q.id]}
+                      onAnswer={answerQuestion}
+                    />
+                  </div>
+                ))}
+              </div>
 
               {/* Next dimension button */}
               <div className="flex justify-center mt-6">

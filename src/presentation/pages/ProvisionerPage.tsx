@@ -15,7 +15,7 @@ export default function ProvisionerPage() {
       {/* Header */}
       <div className="mb-8">
         <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-emerald-accent/30 bg-emerald-accent/5 text-emerald-accent text-xs mb-4">
-          <span className="w-1.5 h-1.5 bg-emerald-accent rounded-full animate-pulse" />
+          <span className="w-1.5 h-1.5 bg-emerald-accent rounded-full animate-pulse" aria-hidden="true" />
           Phase 3 — Deploy
         </div>
         <h1 className="text-3xl font-bold text-white mb-2">Sandbox Provisioner</h1>
@@ -26,33 +26,36 @@ export default function ProvisionerPage() {
 
       {/* Step indicator */}
       {p.currentStep !== 'provisioning' && (
-        <div className="flex items-center gap-2 mb-8">
-          {STEP_LABELS.slice(0, 3).map((label, i) => (
-            <div key={label} className="flex items-center gap-2">
-              <div
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
-                  i === p.stepIndex
-                    ? 'bg-emerald-accent/10 text-emerald-accent border border-emerald-accent/30'
-                    : i < p.stepIndex
-                    ? 'bg-navy-800 text-navy-300'
-                    : 'bg-navy-900 text-navy-600'
-                }`}
-              >
-                <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
-                  i < p.stepIndex ? 'bg-emerald-accent/20 text-emerald-accent' : ''
-                }`}>
-                  {i < p.stepIndex ? '✓' : i + 1}
-                </span>
-                {label}
-              </div>
-              {i < 2 && (
-                <svg className="w-4 h-4 text-navy-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              )}
-            </div>
-          ))}
-        </div>
+        <nav aria-label="Provisioning steps">
+          <ol className="flex items-center gap-2 mb-8">
+            {STEP_LABELS.slice(0, 3).map((label, i) => (
+              <li key={label} className="flex items-center gap-2">
+                <div
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium transition-colors ${
+                    i === p.stepIndex
+                      ? 'bg-emerald-accent/10 text-emerald-accent border border-emerald-accent/30'
+                      : i < p.stepIndex
+                      ? 'bg-navy-800 text-navy-300'
+                      : 'bg-navy-900 text-navy-600'
+                  }`}
+                  aria-current={i === p.stepIndex ? 'step' : undefined}
+                >
+                  <span className={`w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold ${
+                    i < p.stepIndex ? 'bg-emerald-accent/20 text-emerald-accent' : ''
+                  }`} aria-hidden="true">
+                    {i < p.stepIndex ? '✓' : i + 1}
+                  </span>
+                  {label}
+                </div>
+                {i < 2 && (
+                  <svg className="w-4 h-4 text-navy-700" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                )}
+              </li>
+            ))}
+          </ol>
+        </nav>
       )}
 
       {/* Step content */}

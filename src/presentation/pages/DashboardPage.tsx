@@ -31,16 +31,20 @@ export default function DashboardPage() {
           <p className="text-xs text-navy-500 mt-1">Real-time visibility across all Claude Code deployments</p>
         </div>
         <div className="flex items-center gap-2">
-          <span className="w-2 h-2 bg-emerald-accent rounded-full animate-pulse" />
+          <span className="w-2 h-2 bg-emerald-accent rounded-full animate-pulse" aria-hidden="true" />
           <span className="text-xs text-navy-500">Live — Demo Data</span>
         </div>
       </div>
 
       {/* View tabs */}
-      <div className="flex flex-wrap gap-2 mb-6">
+      <div className="flex flex-wrap gap-2 mb-6" role="tablist" aria-label="Dashboard views">
         {views.map((view) => (
           <button
             key={view.id}
+            role="tab"
+            aria-selected={activeView === view.id}
+            aria-controls={`tabpanel-${view.id}`}
+            id={`tab-${view.id}`}
             onClick={() => setActiveView(view.id)}
             className={`flex items-center gap-2 px-4 py-2.5 rounded-lg text-sm transition-colors border ${
               activeView === view.id
@@ -48,7 +52,7 @@ export default function DashboardPage() {
                 : 'border-navy-800 text-navy-500 hover:text-navy-300 hover:border-navy-700'
             }`}
           >
-            <span>{view.icon}</span>
+            <span aria-hidden="true">{view.icon}</span>
             <div className="text-left">
               <div className="font-medium">{view.label}</div>
               <div className="text-[10px] opacity-60">{view.audience}</div>
@@ -58,18 +62,24 @@ export default function DashboardPage() {
       </div>
 
       {/* View content */}
-      {activeView === 'executive' && (
-        <ExecutiveView metrics={metrics} events={events} environments={environments} />
-      )}
-      {activeView === 'events' && (
-        <EventsView events={events} />
-      )}
-      {activeView === 'compliance' && (
-        <ComplianceView controls={controls} />
-      )}
-      {activeView === 'operational' && (
-        <OperationalView metrics={metrics} environments={environments} />
-      )}
+      <div
+        role="tabpanel"
+        id={`tabpanel-${activeView}`}
+        aria-labelledby={`tab-${activeView}`}
+      >
+        {activeView === 'executive' && (
+          <ExecutiveView metrics={metrics} events={events} environments={environments} />
+        )}
+        {activeView === 'events' && (
+          <EventsView events={events} />
+        )}
+        {activeView === 'compliance' && (
+          <ComplianceView controls={controls} />
+        )}
+        {activeView === 'operational' && (
+          <OperationalView metrics={metrics} environments={environments} />
+        )}
+      </div>
     </div>
   )
 }

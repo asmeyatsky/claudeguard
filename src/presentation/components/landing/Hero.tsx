@@ -15,7 +15,7 @@ export default function Hero() {
 
       <div className="relative max-w-7xl mx-auto text-center">
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-electric/30 bg-electric/5 text-electric text-sm mb-8">
-          <span className="w-2 h-2 bg-electric rounded-full animate-pulse" />
+          <span className="w-2 h-2 bg-electric rounded-full animate-pulse" aria-hidden="true" />
           Enterprise Security Lifecycle Platform
         </div>
 

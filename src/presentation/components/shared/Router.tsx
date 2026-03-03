@@ -44,7 +44,7 @@ export function Route({ path, component: Component }: { path: string; component:
   return <Component />
 }
 
-export function Link({ to, children, className }: { to: string; children: ReactNode; className?: string }) {
+export function Link({ to, children, className, ...rest }: { to: string; children: ReactNode; className?: string; [key: string]: unknown }) {
   const { navigate } = useRouter()
   return (
     <a
@@ -55,6 +55,7 @@ export function Link({ to, children, className }: { to: string; children: ReactN
         window.scrollTo(0, 0)
       }}
       className={className}
+      {...rest}
     >
       {children}
     </a>
